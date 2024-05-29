@@ -1,0 +1,111 @@
+// tower.js
+import { Actor, Vector, Color, Circle, Label, Font, FontUnit  } from "excalibur";
+import { Resources } from './resources.js';
+import { Bullet } from './bullet.js';
+import { Fish } from './fish.js';
+
+export class Tower extends Actor {
+    tier = 0;
+    list = [Resources.Tier1.toSprite(), Resources.Tier2.toSprite(), Resources.Tier3.toSprite(), Resources.Tier4.toSprite(), Resources.Tier5.toSprite()];
+    radius = 200;
+    bulletSpeed = 200;
+    rangeIndicator;
+    listInterval = [10000000, 500, 400, 300, 200, 100];
+    
+
+    constructor(position_x, position_y) {
+        super({ width: Resources.Tier0.width, height: Resources.Tier0.height });
+
+        const sprite = Resources.Tier0.toSprite();
+        this.graphics.use(sprite);
+
+        this.pos = new Vector(position_x, position_y);
+
+        this.rangeIndicator = new Actor({
+            pos: new Vector(0, 0),
+            width: this.radius * 2,
+            height: this.radius * 2,
+            anchor: new Vector(0.5, 0.5)
+        });
+
+        this.rangeIndicator.graphics.use(new Circle({
+            radius: this.radius,
+            color: Color.Transparent,
+            strokeColor: Color.Yellow,
+            strokeThickness: 1 // Fine line
+        }));
+
+        this.addChild(this.rangeIndicator);
+        this.rangeIndicator.z = -1; // Ensure the indicator is behind the tower
+        this.rangeIndicator.visible = false;
+
+        this.on("pointerup", () => this.OnClicked());
+        this.on("pointerenter", () => this.showRangeIndicator());
+        this.on("pointerleave", () => this.hideRangeIndicator());
+
+        this.shootingInterval = 100000000; 
+        this.timeSinceLastShot = 0;
+
+        const title = new Label
+        title.text = 'Upgrade $50'
+        title.pos = new Vector(-67,50)
+        title.font = new Font({
+            family: 'fantasy',
+            size: 25,
+            unit: FontUnit.Px,
+            color: new Color(255, 255, 255),
+            shadow: {
+                blur: 5,
+                offset: new Vector(-10,10),
+                color: Color.Red
+              }
+        })
+        this.addChild(title)
+    }
+
+    OnClicked() {
+        if (this.tier < 5) {
+            const sprite = this.list[this.tier];
+            this.graphics.use(sprite);
+            this.tier++;
+            this.updateProperties();
+        }
+    }
+
+    updateProperties() {
+        this.shootingInterval = this.listInterval[this.tier]
+        this.children[1].pos.y = this.children[1].pos.y + 10
+        this.children[1].text = 'Upgrade $75'
+
+        this.scene.money--
+        this.scene.money.text = `${this.scene.money}`; //?????????
+    }
+
+    showRangeIndicator() {
+        this.rangeIndicator.visible = true;
+    }
+
+    hideRangeIndicator() {
+        this.rangeIndicator.visible = false;
+    }
+
+    shoot(target) {
+        const bullet = new Bullet(this.pos.x, this.pos.y, target, this.bulletSpeed);
+        this.scene.add(bullet);
+    }
+
+    onPreUpdate(engine, delta) {
+        this.timeSinceLastShot += delta;
+
+        if (this.timeSinceLastShot >= this.shootingInterval) {
+            const enemies = engine.currentScene.actors.filter(actor => actor instanceof Fish);
+            if (enemies.length > 0) {
+                const target = enemies.find(enemy => this.pos.distance(enemy.pos) <= this.radius);
+                if (target) {
+                    this.shoot(target);
+                }
+            }
+            this.timeSinceLastShot = 0;
+        }
+    }
+}

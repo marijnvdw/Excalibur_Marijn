@@ -1,22 +1,25 @@
-import '../css/style.css'
-import { Actor, Engine, Vector } from "excalibur"
-import { Resources, ResourceLoader } from './resources.js'
+import '../css/style.css';
+import { Actor, Engine, Vector, Label, Font, FontUnit, Color } from "excalibur";
+import { Resources, ResourceLoader } from './resources.js';
+import { Level } from './level.js';
+import { Begin } from './begin.js';
+import { End } from './end.js';
 
 export class Game extends Engine {
 
     constructor() {
-        super({ width: 800, height: 600 })
+        super({width: 1280, height: 720})
+        this.showDebug(true)
         this.start(ResourceLoader).then(() => this.startGame())
     }
 
-    startGame() {
-        console.log("start de game!")
-        const fish = new Actor()
-        fish.graphics.use(Resources.Fish.toSprite())
-        fish.pos = new Vector(400, 300)
-        fish.vel = new Vector(-10,0)
-        this.add(fish)
+    startGame(){
+        this.add('begin', new Begin())
+        this.add('level', new Level())
+        this.add('end', new End())
+        this.goToScene('begin')
     }
+
 }
 
-new Game()
+new Game();
