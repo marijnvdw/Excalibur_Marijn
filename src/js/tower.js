@@ -1,5 +1,5 @@
 // tower.js
-import { Actor, Vector, Color, Circle, Label, Font, FontUnit  } from "excalibur";
+import { Actor, Vector, Color, Circle, Label, Font, FontUnit } from "excalibur";
 import { Resources } from './resources.js';
 import { Bullet } from './bullet.js';
 import { Fish } from './fish.js';
@@ -10,8 +10,9 @@ export class Tower extends Actor {
     radius = 200;
     bulletSpeed = 200;
     rangeIndicator;
-    listInterval = [10000000, 500, 400, 300, 200, 100];
-    
+    listInterval = [10000000, 500, 450, 400, 350, 300];
+    listCost = [50, 75, 100, 125, 150]
+
 
     constructor(position_x, position_y) {
         super({ width: Resources.Tier0.width, height: Resources.Tier0.height });
@@ -23,8 +24,8 @@ export class Tower extends Actor {
 
         this.rangeIndicator = new Actor({
             pos: new Vector(0, 0),
-            width: this.radius * 2,
-            height: this.radius * 2,
+            width: this.radius * 2.2,
+            height: this.radius * 2.2,
             anchor: new Vector(0.5, 0.5)
         });
 
@@ -43,12 +44,12 @@ export class Tower extends Actor {
         this.on("pointerenter", () => this.showRangeIndicator());
         this.on("pointerleave", () => this.hideRangeIndicator());
 
-        this.shootingInterval = 100000000; 
+        this.shootingInterval = 100000000;
         this.timeSinceLastShot = 0;
 
         const title = new Label
         title.text = 'Upgrade $50'
-        title.pos = new Vector(-67,50)
+        title.pos = new Vector(-67, 50)
         title.font = new Font({
             family: 'fantasy',
             size: 25,
@@ -56,29 +57,40 @@ export class Tower extends Actor {
             color: new Color(255, 255, 255),
             shadow: {
                 blur: 5,
-                offset: new Vector(-10,10),
+                offset: new Vector(-10, 10),
                 color: Color.Red
-              }
+            }
         })
         this.addChild(title)
     }
 
     OnClicked() {
         if (this.tier < 5) {
+            if (this.scene.moneyAmount >= this.listCost[this.tier]) {
             const sprite = this.list[this.tier];
             this.graphics.use(sprite);
             this.tier++;
             this.updateProperties();
+            }
         }
     }
 
     updateProperties() {
-        this.shootingInterval = this.listInterval[this.tier]
-        this.children[1].pos.y = this.children[1].pos.y + 10
-        this.children[1].text = 'Upgrade $75'
+        
+            this.shootingInterval = this.listInterval[this.tier]
 
-        this.scene.money--
-        this.scene.money.text = `${this.scene.money}`; //?????????
+            if (this.tier - 1< this.listCost.length) {
+                this.children[1].pos.y = this.children[1].pos.y + 10
+                this.children[1].text = `Upgrade $${this.listCost[this.tier]}`
+            } else {
+                this.children[1].kill()
+            }
+
+            this.scene.moneyAmount = this.scene.moneyAmount - this.listCost[this.tier - 1]
+            this.scene.money.text = `${this.scene.moneyAmount}`;
+
+            console.log(this.listCost[this.tier - 1])
+        
     }
 
     showRangeIndicator() {

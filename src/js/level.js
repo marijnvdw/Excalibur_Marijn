@@ -7,18 +7,18 @@ import { Tower } from './tower.js';
 export class Level extends Scene {
 
     timer = 150;
-    order = [0,0,0,0,1]
+    order = [0,0,0,0,1,0,0,2,0,0,1,2,1,1,3]//2,0,0,2,2,1,1,0,2,0,2,1,1,1,2,1,0,1,1,2,1,0,1,0,1
     amount = 0
+    moneyAmount = 100
+    intervalTime = 400
 
     constructor() {
         super({ width: 1280, height: 720 });
-        //this.showDebug(true);
-        //this.start(ResourceLoader).then(() => this.startGame());
     }
 
     onActivate() {
         this.timer = 299;
-        this.healthAmount = 100;
+        this.healthAmount = 5;
         this.moneyAmount = 100
         
         const background = new Actor();
@@ -55,6 +55,9 @@ export class Level extends Scene {
         const tower3 = new Tower(1000, 180);
         this.add(tower3);
 
+        const tower4 = new Tower(940, 460);
+        this.add(tower4);
+
         const castle = new Actor();
         castle.graphics.use(Resources.Castle.toSprite());
         castle.pos = new Vector(1250, 280);
@@ -80,14 +83,12 @@ export class Level extends Scene {
         });
         this.add(this.label);
         
-
-
     }
 
     levelOne(){
         
         if (this.order.length != this.amount) {
-            if (this.timer === 300) {
+            if (this.timer === this.intervalTime) {
                 const fish = new Fish(this.order[this.amount]);
                 this.add(fish); 
                 
@@ -95,16 +96,20 @@ export class Level extends Scene {
 
                 this.timer = 0
                 this.amount++
+                this.intervalTime = this.intervalTime - 5
             }
         } //else {
-        //     this.amount = 0
-        //     this.engine.goToScene('end')
-        // }
+        //      //this.amount = 0
+        //      //this.engine.goToScene('end')
+        //      
+        // }        
     }
 
     onPostUpdate() {
         this.timer++;
         this.levelOne()
+
+        //this.healthAmount = 5
     }
 }
 

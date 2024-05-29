@@ -20,6 +20,10 @@ export class Fish extends Actor {
             sprite.tint = new Color(255, 100, 0); //green
             this.hp = 70;
             this.speed = 120
+        } else if (value === 3) {
+            sprite.tint = new Color(255, 5, 0); //green
+            this.hp = 1000;
+            this.speed = 40
         }
 
         this.graphics.use(sprite);
@@ -68,7 +72,12 @@ export class Fish extends Actor {
     }
 
     onPostKill() {
+
+        // Als fish dood gaat, check of die nog health heeft, zo ja, geen geld geven
         // this.scene.engine.updateScore()
+        this.scene.moneyAmount = this.scene.moneyAmount + 25
+        this.scene.money.text = `${this.scene.moneyAmount}`;
+        this.scene.waveEmemyAmount++
     }
 
     onPostUpdate() {
