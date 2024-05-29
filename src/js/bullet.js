@@ -1,7 +1,5 @@
 // bullet.js
 import { Actor, Vector, Color } from "excalibur";
-import { Tower } from './tower.js';
-import { Fish } from './fish.js';
 
 export class Bullet extends Actor {
     constructor(x, y, target) {
@@ -12,7 +10,7 @@ export class Bullet extends Actor {
         });
 
         this.target = target;
-        this.speed = 400; // Use the speed parameter from the tower
+        this.speed = 400;
     }
 
     onInitialize() {

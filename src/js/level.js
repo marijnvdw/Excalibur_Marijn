@@ -7,16 +7,24 @@ import { Tower } from './tower.js';
 export class Level extends Scene {
 
     timer = 150;
-    order = [0,0,0,0,1,0,0,2,0,0,1,2,1,1,3]//2,0,0,2,2,1,1,0,2,0,2,1,1,1,2,1,0,1,1,2,1,0,1,0,1
+    order = [0,0,0,0,1]
+    //order = [0,0,0,0,1,0,0,2,2,0,0,2,2,1,1,0,2,0,2,1,1,1,2,1,0,1,1,2,1,0,1,0,0,0,1,2,1,1,3]
     amount = 0
     moneyAmount = 100
     intervalTime = 400
+    killed = 0
 
     constructor() {
         super({ width: 1280, height: 720 });
     }
 
     onActivate() {
+
+        const Won = localStorage.getItem("Won");
+        if (Won) {
+            this.order = [0,1,0,0,1,1,1,2,2,1,0,2,2,1,1,0,2,1,2,1,1,1,2,1,2,1,1,2,1,2,1,0,1,0,1,2,1,1,3]
+        }
+
         this.timer = 299;
         this.healthAmount = 5;
         this.moneyAmount = 100
@@ -70,10 +78,9 @@ export class Level extends Scene {
         Heart.scale = new Vector(0.08, 0.08);
         this.add(Heart);
 
-
         this.label = new Label({
             text: `${this.healthAmount}`,
-            pos: new Vector(1200, 113),
+            pos: new Vector(1214, 113),
             font: new Font({
                 family: 'impact',
                 size: 24,
@@ -86,30 +93,44 @@ export class Level extends Scene {
     }
 
     levelOne(){
-        
         if (this.order.length != this.amount) {
             if (this.timer === this.intervalTime) {
                 const fish = new Fish(this.order[this.amount]);
                 this.add(fish); 
-                
-                console.log(this.order[this.amount])
 
                 this.timer = 0
                 this.amount++
                 this.intervalTime = this.intervalTime - 5
             }
-        } //else {
-        //      //this.amount = 0
-        //      //this.engine.goToScene('end')
-        //      
-        // }        
+        }     
     }
 
     onPostUpdate() {
         this.timer++;
         this.levelOne()
 
-        //this.healthAmount = 5
+        if (this.healthAmount === 0) {
+            this.toEndScreen()
+        }
+
+        if (this.killed === this.order.length){
+            localStorage.setItem("Health", this.healthAmount);
+            localStorage.setItem("Won", 1);
+            this.toEndScreen()
+        }
+    }
+
+    toEndScreen() {
+        this.amount = 0
+        this.killed = 0
+        this.killAllActors();
+        this.engine.goToScene('end')
+    }
+
+    killAllActors() {
+        this.actors.forEach(actor => {
+            actor.kill();
+        });
     }
 }
 

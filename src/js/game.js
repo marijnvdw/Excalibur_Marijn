@@ -9,17 +9,16 @@ export class Game extends Engine {
 
     constructor() {
         super({width: 1280, height: 720})
-        this.showDebug(true)
         this.start(ResourceLoader).then(() => this.startGame())
     }
 
     startGame(){
+        localStorage.removeItem("Won");
         this.add('begin', new Begin())
         this.add('level', new Level())
         this.add('end', new End())
         this.goToScene('begin')
     }
-
 }
 
 new Game();

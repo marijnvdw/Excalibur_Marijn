@@ -15,6 +15,7 @@ const Resources = {
     StartButton: new ImageSource('images/StartButton.png'),
     Heart: new ImageSource('images/pixel-heart.png'),
     Money: new ImageSource('images/Money.png'),
+    BackgroundBegin: new ImageSource('images/BackGroundGame.jpg'),
 
 };
 
@@ -22,6 +23,5 @@ const ResourceLoader = new Loader()
     for(let res of Object.values(Resources)) {
         ResourceLoader.addResource(res)
     }
-
 
 export { Resources, ResourceLoader };

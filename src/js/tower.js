@@ -11,7 +11,7 @@ export class Tower extends Actor {
     bulletSpeed = 200;
     rangeIndicator;
     listInterval = [10000000, 500, 450, 400, 350, 300];
-    listCost = [50, 75, 100, 125, 150]
+    listCost = [50, 75, 100, 125, 150,]
 
 
     constructor(position_x, position_y) {
@@ -41,8 +41,6 @@ export class Tower extends Actor {
         this.rangeIndicator.visible = false;
 
         this.on("pointerup", () => this.OnClicked());
-        this.on("pointerenter", () => this.showRangeIndicator());
-        this.on("pointerleave", () => this.hideRangeIndicator());
 
         this.shootingInterval = 100000000;
         this.timeSinceLastShot = 0;
@@ -56,9 +54,9 @@ export class Tower extends Actor {
             unit: FontUnit.Px,
             color: new Color(255, 255, 255),
             shadow: {
-                blur: 5,
-                offset: new Vector(-10, 10),
-                color: Color.Red
+                blur: 1,
+                offset: new Vector(-7, 7),
+                color: Color.Gray
             }
         })
         this.addChild(title)
@@ -76,10 +74,9 @@ export class Tower extends Actor {
     }
 
     updateProperties() {
-        
             this.shootingInterval = this.listInterval[this.tier]
 
-            if (this.tier - 1< this.listCost.length) {
+            if (this.tier< this.listCost.length) {
                 this.children[1].pos.y = this.children[1].pos.y + 10
                 this.children[1].text = `Upgrade $${this.listCost[this.tier]}`
             } else {
@@ -90,15 +87,6 @@ export class Tower extends Actor {
             this.scene.money.text = `${this.scene.moneyAmount}`;
 
             console.log(this.listCost[this.tier - 1])
-        
-    }
-
-    showRangeIndicator() {
-        this.rangeIndicator.visible = true;
-    }
-
-    hideRangeIndicator() {
-        this.rangeIndicator.visible = false;
     }
 
     shoot(target) {

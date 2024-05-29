@@ -1,7 +1,6 @@
 // fish.js
 import { Actor, Vector, Color, Label, Font, FontUnit } from "excalibur";
 import { Resources } from './resources.js';
-import { Tower } from './tower.js';
 
 export class Fish extends Actor {
     constructor(value) {
@@ -59,25 +58,18 @@ export class Fish extends Actor {
         }
     }
 
-    // onInitialize() {
-        
-    // }
-
     takeDamage(amount) {
         this.hp -= amount;
         if (this.hp <= 0) {
-            this.kill(); // Remove enemy from the game if health is 0 or below
+            this.kill();
         }
         this.label.text = `${this.hp}`;
     }
 
     onPostKill() {
-
-        // Als fish dood gaat, check of die nog health heeft, zo ja, geen geld geven
-        // this.scene.engine.updateScore()
         this.scene.moneyAmount = this.scene.moneyAmount + 25
         this.scene.money.text = `${this.scene.moneyAmount}`;
-        this.scene.waveEmemyAmount++
+        this.scene.killed++
     }
 
     onPostUpdate() {
