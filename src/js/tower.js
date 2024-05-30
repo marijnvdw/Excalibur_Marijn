@@ -33,11 +33,11 @@ export class Tower extends Actor {
             radius: this.radius,
             color: Color.Transparent,
             strokeColor: Color.Yellow,
-            strokeThickness: 1 // Fine line
+            strokeThickness: 1 
         }));
 
         this.addChild(this.rangeIndicator);
-        this.rangeIndicator.z = -1; // Ensure the indicator is behind the tower
+        this.rangeIndicator.z = -1; 
         this.rangeIndicator.visible = false;
 
         this.on("pointerup", () => this.OnClicked());
