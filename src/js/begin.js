@@ -42,7 +42,7 @@ export class Begin extends Scene {
                 shadow: withShadow ? {
                     blur: 5,
                     offset: new Vector(-10, 10),
-                    color: Color.Red
+                    color: Color.Gray
                 } : undefined
             })
         });
