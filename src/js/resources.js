@@ -16,7 +16,6 @@ const Resources = {
     Heart: new ImageSource('images/pixel-heart.png'),
     Money: new ImageSource('images/Money.png'),
     BackgroundBegin: new ImageSource('images/BackGroundGame.jpg'),
-
 };
 
 const ResourceLoader = new Loader()

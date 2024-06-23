@@ -8,7 +8,7 @@ import { End } from './end.js';
 export class Game extends Engine {
 
     constructor() {
-        super({width: 1280, height: 720})
+        super({width: 1280, height: 720})//super({width: 1920, height: 1080})
         this.start(ResourceLoader).then(() => this.startGame())
     }
 
